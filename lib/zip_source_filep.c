@@ -253,14 +253,14 @@ create_temp_output(struct read_file *ctx) {
     }
     sprintf(temp, "%s.XXXXXX", ctx->fname);
 
-    mask = umask(_SAFE_MASK);
+//    mask = umask(_SAFE_MASK);
     if ((tfd = mkstemp(temp)) == -1) {
 	zip_error_set(&ctx->error, ZIP_ER_TMPOPEN, errno);
-	umask(mask);
+//	umask(mask);
 	free(temp);
 	return -1;
     }
-    umask(mask);
+//    umask(mask);
 
     if ((tfp = fdopen(tfd, "r+b")) == NULL) {
 	zip_error_set(&ctx->error, ZIP_ER_TMPOPEN, errno);
@@ -423,8 +423,9 @@ read_file(void *state, void *data, zip_uint64_t len, zip_source_cmd_t cmd) {
 	    zip_error_set(&ctx->error, ZIP_ER_RENAME, errno);
 	    return -1;
 	}
-	mask = umask(022);
-	umask(mask);
+//	mask = umask(022);
+//	umask(mask);
+    mask = 0777;
 	/* not much we can do if chmod fails except make the whole commit fail */
 	(void)chmod(ctx->fname, 0666 & ~mask);
 	free(ctx->tmpname);
